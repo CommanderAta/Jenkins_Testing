@@ -1,49 +1,56 @@
 pipeline {
-    agent any 
+    agent any
 
     environment {
-        // Define environment variables if needed
-        PROJECT_DIR = '/home/attaali/Desktop/Node_Basic'
+        // Replace with your Docker image name, e.g., "myapp:latest"
+        DOCKER_IMAGE = 'myapp:latest' 
+        // Adjust if your kubeconfig is located elsewhere
+        KUBECONFIG = '/home/jenkins/.kube/config'
     }
 
     stages {
-        stage('Prepare Environment') {
+        stage('Clone Repository') {
             steps {
-                // Create the project directory if it doesn't exist
-                sh 'mkdir -p $PROJECT_DIR'
+                // Replace with your repository URL
+                git url: 'https://your-git-repository-url.git', branch: 'main'
             }
         }
 
-        stage('Clone Repository') {
+        stage('Build Docker Image') {
             steps {
-                // Change to the project directory and clone the repo
-                // Replace 'yourusername/yourrepository.git' with your actual repository path
                 script {
-                    dir('$PROJECT_DIR') {
-                        sh 'git clone https://github.com/yourusername/yourrepository.git . || git pull'
-                    }
+                    docker.build("${DOCKER_IMAGE}")
                 }
             }
         }
 
-        stage('Build and Run Docker Containers') {
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             // Assuming Docker Hub, adjust for your container registry.
+        //             // Replace 'docker-credentials-id' with your Jenkins credentials ID for Docker Hub.
+        //             docker.withRegistry('https://index.docker.io/v1/', 'docker-credentials-id') {
+        //                 docker.image("${DOCKER_IMAGE}").push()
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Deploy to Minikube') {
             steps {
-                // Navigate to the project directory and run docker-compose
-                sh 'cd $PROJECT_DIR && docker-compose up -d'
+                script {
+                    // Assumes kubectl is configured to use Minikube context.
+                    sh 'kubectl config use-context minikube'
+                    // Replace 'deployment.yaml' with the path to your Kubernetes deployment file if different.
+                    sh 'kubectl apply -f deployment.yaml'
+                }
             }
         }
     }
 
     post {
         always {
-            echo 'Cleaning up'
-            // Add any cleanup steps if required
-        }
-        success {
-            echo 'Pipeline completed successfully'
-        }
-        failure {
-            echo 'Pipeline failed'
+            // Add cleanup or notification steps here.
         }
     }
 }
