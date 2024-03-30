@@ -50,7 +50,7 @@ pipeline {
 
     post {
         always {
-            // Add cleanup or notification steps here.
+            sh'echo"Hi"'
         }
     }
 }
