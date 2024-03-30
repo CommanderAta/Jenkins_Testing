@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-application
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-application
+  template:
+    metadata:
+      labels:
+        app: my-application
+    spec:
+      containers:
+      - name: my-application
+        image: your-docker-image:latest  # Replace with your Docker image and tag
+        ports:
+        - containerPort: 8080  # Adjust based on your application's port
+        env:
+        - name: ENV_VAR_NAME  # Optional: Environment variable name
+          value: "value"      # Optional: Environment variable value
+        # Uncomment and adjust the following if you need volume mounts
+        # volumeMounts:
+        # - name: volume-name
+        #   mountPath: /path/in/container
+      # Uncomment and adjust the following if you need volumes
+      # volumes:
+      # - name: volume-name
+      #   persistentVolumeClaim:
+      #     claimName: pvc-name
