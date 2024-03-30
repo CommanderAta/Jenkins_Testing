@@ -8,13 +8,13 @@ pipeline {
         KUBECONFIG = '/home/jenkins/.kube/config'
     }
 
-    stages {
-        stage('Clone Repository') {
-            steps {
-                // Replace with your repository URL
-                git url: 'https://your-git-repository-url.git', branch: 'main'
-            }
-        }
+    // stages {
+    //     stage('Clone Repository') {
+    //         steps {
+    //             // Replace with your repository URL
+    //             git url: 'https://your-git-repository-url.git', branch: 'main'
+    //         }
+    //     }
 
         stage('Build Docker Image') {
             steps {
