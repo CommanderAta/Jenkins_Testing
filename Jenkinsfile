@@ -48,9 +48,5 @@ pipeline {
         }
     }
 
-    post {
-        always {
-           sh'echo"Hi"'
-        }
-    }
+    
 }
